@@ -1,1 +1,1 @@
-ramme-installer-windows
+# Ramme installer for windows
