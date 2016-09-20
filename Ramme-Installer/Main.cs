@@ -1,11 +1,14 @@
 ﻿using IWshRuntimeLibrary;
+using Octokit;
 using Ramme_Installer.Properties;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -104,7 +107,7 @@ namespace Ramme_Installer
                 shortcut.Save();
             }
 
-            Application.Exit();
+            System.Windows.Forms.Application.Exit();
         }
 
         private static string GetPlatform()
@@ -117,10 +120,14 @@ namespace Ramme_Installer
 
         private static string GetVersion ()
         {
-            using (WebClient Client = new WebClient())
-            {
-                return Client.DownloadString("https://raw.githubusercontent.com/VoOoLoX/ramme/master/releases").Trim();
-            }
+            var Connection = new ApiConnection(new Connection(new ProductHeaderValue("Ramme-Installer-Windows")));
+            
+            var Repository = new RepositoriesClient(Connection).Release.GetAll("terkelg", "ramme");
+
+            var Latest = Repository.Result[0];
+            
+            return Latest.TagName.ToString();
+
         }
 
     }
